@@ -1,25 +1,18 @@
 {
-  "name": "eth-hd-keyring",
-  "version": "2.0.0",
-  "description": "A simple standard interface for a seed phrase generated set of Ethereum accounts.",
+  "name": "eth-aragon-keyring",
+  "version": "1.0.0",
+  "description": "A keyring for using Aragon Smart Organizations in Metamask.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/MetaMask/eth-hd-keyring.git"
-  },
   "keywords": [
     "ethereum",
-    "keyring"
+    "keyring",
+    "Aragon"
   ],
-  "author": "Dan Finlay",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MetaMask/eth-hd-keyring/issues"
-  },
-  "homepage": "https://github.com/MetaMask/eth-hd-keyring#readme",
+  "author": "Jeremy Macaluso",
+  "license": "GPL-3.0",
   "dependencies": {
     "bip39": "^2.2.0",
     "eth-sig-util": "^2.0.1",
