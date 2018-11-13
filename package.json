@@ -1,6 +1,6 @@
 {
   "name": "eth-aragon-keyring",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A keyring for using Aragon Smart Organizations in Metamask.",
   "main": "index.js",
   "scripts": {
@@ -14,6 +14,7 @@
   "author": "Jeremy Macaluso",
   "license": "GPL-3.0",
   "dependencies": {
+    "@aragon/wrapper": "^3.0.0-beta.1",
     "bip39": "^2.2.0",
     "eth-sig-util": "^2.0.1",
     "ethereumjs-abi": "^0.6.5",

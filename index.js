@@ -1,14 +1,11 @@
 const EventEmitter = require('events').EventEmitter
-const hdkey = require('ethereumjs-wallet/hdkey')
-const bip39 = require('bip39')
-const ethUtil = require('ethereumjs-util')
 const sigUtil = require('eth-sig-util')
+const initAragonJS = require('./aragonjs-wrapper');
 
 // Options:
-const hdPathString = `m/44'/60'/0'/0`
-const type = 'HD Key Tree'
+const type = 'Aragon Key'
 
-class HdKeyring extends EventEmitter {
+class AragonKeyring extends EventEmitter {
 
   /* PUBLIC METHODS */
 
@@ -30,20 +27,27 @@ class HdKeyring extends EventEmitter {
   deserialize (opts = {}) {
     this.opts = opts || {}
     this.wrapper = {}
-    this.ens = ens
-    this.dao = dao
-    this.forwardingAddress = sigUtil.normalize(forwardingAddress)
-    this.parentAddress = sigUtil.normalize(parentAddress)
+    this.subProvider = {}
+    this.ens = opts.ens
+    this.dao = opts.dao
+    this.forwardingAddress = sigUtil.normalize(opts.forwardingAddress)
+    this.parentAddress = sigUtil.normalize(opts.parentAddress)
 
     return Promise.resolve([])
   }
 
   addAccounts (numberOfAccounts = 1) {
-    return Promise.resolve([forwardingAddress])
+    throw new Error('Not supported')
   }
 
   getAccounts () {
     return Promise.resolve([forwardingAddress])
+  }
+
+  // the provider needs to be injected somewhere, as does some way of passing the transaction to the final signer
+  setProvider (subProvider, providerSignTransaction) {
+    this.subProvider = subProvider
+    this.providerSignTransaction = providerSignTransaction
   }
 
   // tx is an instance of the ethereumjs-transaction class.
@@ -57,52 +61,32 @@ class HdKeyring extends EventEmitter {
         [tx.from])
     })
     .then(result => {
-      this.subProvider.send(result[0],this.parentAddress)
+      this.providerSignTransaction(result[0],this.parentAddress)
     })
   }
 
-  // For eth_sign, we need to sign transactions:
-  // hd
+
   signMessage (withAccount, data) {
-    const wallet = this._getWallet()
-    const message = ethUtil.stripHexPrefix(data)
-    var privKey = wallet.getPrivateKey()
-    var msgSig = ethUtil.ecsign(new Buffer(message, 'hex'), privKey)
-    var rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
-    return Promise.resolve(rawMsgSig)
+    throw new Error('Not supported')
   }
 
-  // For personal_sign, we need to prefix the message:
+
   signPersonalMessage (withAccount, msgHex) {
-    const wallet = this._getWallet()
-    const privKey = ethUtil.stripHexPrefix(wallet.getPrivateKey())
-    const privKeyBuffer = new Buffer(privKey, 'hex')
-    const sig = sigUtil.personalSign(privKeyBuffer, { data: msgHex })
-    return Promise.resolve(sig)
+    throw new Error('Not supported')
   }
 
-  // personal_signTypedData, signs data along with the schema
+
   signTypedData (withAccount, typedData) {
-    const wallet = this._getWallet()
-    const privKey = ethUtil.toBuffer(wallet.getPrivateKey())
-    const signature = sigUtil.signTypedData(privKey, { data: typedData })
-    return Promise.resolve(signature)
+    throw new Error('Not supported')
   }
 
-  // For eth_sign, we need to sign transactions:
+
   newGethSignMessage (withAccount, msgHex) {
-    const wallet = this._getWallet()
-    const privKey = wallet.getPrivateKey()
-    const msgBuffer = ethUtil.toBuffer(msgHex)
-    const msgHash = ethUtil.hashPersonalMessage(msgBuffer)
-    const msgSig = ethUtil.ecsign(msgHash, privKey)
-    const rawMsgSig = ethUtil.bufferToHex(sigUtil.concatSig(msgSig.v, msgSig.r, msgSig.s))
-    return Promise.resolve(rawMsgSig)
+    throw new Error('Not supported')
   }
 
   exportAccount (address) {
-    const wallet = this._getWallet()
-    return Promise.resolve(wallet.getPrivateKey().toString('hex'))
+    throw new Error('Not supported')
   }
 
 
@@ -110,6 +94,9 @@ class HdKeyring extends EventEmitter {
 
 
   _getWallet () {
+    if(!this.subProvider){
+      throw new Error('supProvider not provided')
+    }
     if(this.wrapper){
       return (promise.resolve(this.wrapper))
     }
@@ -124,5 +111,5 @@ class HdKeyring extends EventEmitter {
   }
 }
 
-HdKeyring.type = type
-module.exports = HdKeyring
+AragonKeyring.type = type
+module.exports = AragonKeyring
