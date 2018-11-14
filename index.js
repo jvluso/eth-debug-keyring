@@ -1,5 +1,4 @@
 const EventEmitter = require('events').EventEmitter
-const sigUtil = require('eth-sig-util')
 const initAragonJS = require('./aragonjs-wrapper');
 
 // Options:
@@ -30,8 +29,8 @@ class AragonKeyring extends EventEmitter {
     this.subProvider = {}
     this.ens = opts.ens
     this.dao = opts.dao
-    this.forwardingAddress = sigUtil.normalize(opts.forwardingAddress)
-    this.parentAddress = sigUtil.normalize(opts.parentAddress)
+    this.forwardingAddress = opts.forwardingAddress
+    this.parentAddress = opts.parentAddress
 
     return Promise.resolve([])
   }
