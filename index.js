@@ -1,10 +1,20 @@
 const EventEmitter = require('events').EventEmitter
-const initAragonJS = require('./aragonjs-wrapper');
+const ethUtil = require('ethereumjs-util')
+
+const FIELDS = [
+  'nonce',
+  'gasPrice',
+  'gasLimit',
+  'to',
+  'value',
+  'data',
+]
+
 
 // Options:
-const type = 'Aragon Key'
+const type = 'Debug Key'
 
-class AragonKeyring extends EventEmitter {
+class DebugKeyring extends EventEmitter {
 
   /* PUBLIC METHODS */
 
@@ -16,21 +26,15 @@ class AragonKeyring extends EventEmitter {
 
   serialize () {
     return Promise.resolve({
-      ens: this.ens,
-      dao: this.dao,
-      forwardingAddress: this.forwardingAddress,
-      parentAddress: this.parentAddress
+      mockAddresses: this.mockAddresses,
     })
   }
 
   deserialize (opts = {}) {
     this.opts = opts || {}
     this.wrapper = {}
-    this.subProvider = {}
-    this.ens = opts.ens
-    this.dao = opts.dao
-    this.forwardingAddress = opts.forwardingAddress
-    this.parentAddress = opts.parentAddress
+    this.mockAddresses = opts.mockAddresses
+    throw new Error(JSON.stringify(opts))
 
     return Promise.resolve([])
   }
@@ -40,75 +44,45 @@ class AragonKeyring extends EventEmitter {
   }
 
   getAccounts () {
-    return Promise.resolve([forwardingAddress])
-  }
-
-  // the provider needs to be injected somewhere, as does some way of passing the transaction to the final signer
-  setProvider (subProvider, providerSignTransaction) {
-    this.subProvider = subProvider
-    this.providerSignTransaction = providerSignTransaction
+    return Promise.resolve(this.mockAddresses)
   }
 
   // tx is an instance of the ethereumjs-transaction class.
   signTransaction (address, tx) {
-    return this._getWallet()
-    .then((wrapper) =>{
-      return wrapper.calculateForwardingPath(
-        this.parentAddress,
-        tx.to,
-        tx,
-        [tx.from])
+    var serialized = { from: address }
+    FIELDS.forEach((field) => {
+      const value = ethUtil.bufferToHex(tx[field])
+      serialized[field] = ethUtil.bufferToHex(tx[field])
     })
-    .then(result => {
-      this.providerSignTransaction(result[0],this.parentAddress)
-    })
+
+    throw new Error(JSON.stringify(serialized))
   }
 
 
   signMessage (withAccount, data) {
-    throw new Error('Not supported')
+    throw new Error(JSON.stringify(data))
   }
 
 
   signPersonalMessage (withAccount, msgHex) {
-    throw new Error('Not supported')
+    throw new Error(JSON.stringify(msgHex))
   }
 
 
   signTypedData (withAccount, typedData) {
-    throw new Error('Not supported')
+    throw new Error(JSON.stringify(typedData))
   }
 
 
   newGethSignMessage (withAccount, msgHex) {
-    throw new Error('Not supported')
+    throw new Error(JSON.stringify(msgHex))
   }
 
   exportAccount (address) {
     throw new Error('Not supported')
   }
 
-
-  /* PRIVATE METHODS */
-
-
-  _getWallet () {
-    if(!this.subProvider){
-      throw new Error('supProvider not provided')
-    }
-    if(this.wrapper){
-      return (promise.resolve(this.wrapper))
-    }
-    return initAragonJS(this.dao, this.ens, {
-      accounts: this.accounts,
-      provider: this.subProvider
-    })
-    .then((initializedWrapper) => {
-      this.wrapper = initializedWrapper
-      return this.wrapper
-    })
-  }
 }
 
-AragonKeyring.type = type
-module.exports = AragonKeyring
+DebugKeyring.type = type
+module.exports = DebugKeyring

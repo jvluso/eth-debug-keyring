@@ -1,23 +1,21 @@
 {
-  "name": "eth-aragon-keyring",
-  "version": "1.0.1",
-  "description": "A keyring for using Aragon Smart Organizations in Metamask.",
+  "name": "eth-debug-keyring",
+  "version": "1.0.0",
+  "description": "A keyring for debugging in Metamask.",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
   },
   "keywords": [
     "ethereum",
-    "keyring",
-    "Aragon"
+    "keyring"
   ],
   "author": "Jeremy Macaluso",
   "license": "GPL-3.0",
   "dependencies": {
-    "@aragon/wrapper": "^3.0.0-beta.1",
     "bip39": "^2.2.0",
     "ethereumjs-abi": "^0.6.5",
-    "ethereumjs-util": "^5.1.1",
+    "ethereumjs-util": "^6.0.0",
     "ethereumjs-wallet": "^0.6.0",
     "events": "^1.1.1",
     "xtend": "^4.0.1"
