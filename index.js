@@ -34,7 +34,6 @@ class DebugKeyring extends EventEmitter {
     this.opts = opts || {}
     this.wrapper = {}
     this.mockAddresses = opts.mockAddresses
-    throw new Error(JSON.stringify(opts))
 
     return Promise.resolve([])
   }
